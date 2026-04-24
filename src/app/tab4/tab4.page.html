@@ -1,13 +1,62 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>tab4</ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Privacy & Security</ion-title>
+    <ion-button slot="end" (click)="showHelp()" fill="clear" color="light">
+      ❔Help
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tab4</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="page-bg">
+  <ion-card class="custom-card privacy-card">
+    <ion-card-header class="card-header">
+      <ion-card-title class="card-title">
+        Privacy & Security Policy
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="card-content">
+      <div class="policy-section">
+        <h5 class="section-title">Data Security</h5>
+        <p class="section-text">
+          All data collected and processed within this inventory management application is used solely for educational purposes as part of the PROG2005 course. All data transmissions follow secure network protocols, and all user inputs are validated to ensure data integrity and security.
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h5 class="section-title">User Privacy Protection</h5>
+        <p class="section-text">
+          We do not collect, store, or share any personal identification information, location data, or device information. All operations performed within the app remain private and are only communicated with the designated course server.
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h5 class="section-title">Data Usage and Storage</h5>
+        <p class="section-text">
+          Inventory data is temporarily stored for functional demonstration only. No commercial use is made of any data entered by users. Sensitive or critical inventory records are protected from accidental deletion or modification.
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h5 class="section-title">Application Security Standards</h5>
+        <p class="section-text">
+          The application implements form validation, input restrictions, and action confirmation dialogs to prevent invalid operations and data loss. All interactive components follow mobile application security best practices.
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h5 class="section-title">Educational Use Disclaimer</h5>
+        <p class="section-text">
+          This application is a student assignment project for demonstration and learning purposes only. The developers assume no liability for data loss, service interruptions, or any issues arising from the use of this application.
+        </p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <footer class="website-footer">
+    <div class="footer-content">
+      <p class="team">Team3 Members: Xinrui Ma, Jingfang Zhang, Hao Wang</p>
+      <p class="copyright">© 2026 Team3. All rights reserved.</p>
+    </div>
+  </footer>
+
 </ion-content>
