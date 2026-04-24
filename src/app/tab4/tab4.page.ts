@@ -25,10 +25,11 @@ export class Tab4Page implements OnInit {
 
   ngOnInit() {}
 
+
   async showHelp() {
     const alert = await this.alertController.create({
-      header: 'Help',
-      message: 'This page displays the complete Privacy & Security Policy of the Inventory Management Application.',
+      header: 'Privacy & Security Policy Help',
+      message: 'This page displays the complete official Privacy & Security Policy of the Inventory Management Application. It covers data protection, user privacy commitment, data usage rules, application security standards, and liability disclaimer in full compliance with academic and security specifications.',
       buttons: ['OK']
     });
     await alert.present();
