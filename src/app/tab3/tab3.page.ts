@@ -59,7 +59,7 @@ export class Tab3Page implements OnInit {
   searchItemByName(searchName: string) {
     const inputName = searchName?.trim().toLowerCase();
     if (!inputName) {
-      this.showToast('Please enter an item name!');
+      this.showToast('❗️Please enter an item name!');
       return;
     }
 
@@ -69,15 +69,15 @@ export class Tab3Page implements OnInit {
           const item = items[0];
           this.isItemFound = true;
           this.itemForm.patchValue(item);
-          this.showToast('Item found successfully!');
+          this.showToast('🎉Item found successfully!');
         } else {
           this.isItemFound = false;
-          this.showToast('Item not found!');
+          this.showToast('❗️Item not found!');
         }
       },
       error: () => {
         this.isItemFound = false;
-        this.showToast('Item not found!');
+        this.showToast('❗️Item not found!');
       }
     });
   }
@@ -87,14 +87,14 @@ export class Tab3Page implements OnInit {
       this.showToast('Please fill all required fields!');
       return;
     }
-    this.showToast('Item updated successfully!');
+    this.showToast('🎉Item updated successfully!');
     this.resetForm();
   }
 
   async deleteItem() {
     const itemName = this.itemForm.get('item_name')!.value;
     if (itemName === 'Laptop') {
-      this.showToast('Laptop is protected! Cannot delete.');
+      this.showToast('❗️Laptop is protected! Cannot delete.');
       return;
     }
 
@@ -102,7 +102,7 @@ export class Tab3Page implements OnInit {
       header: 'Confirm Deletion',
       message: `Delete ${itemName}?`,
       buttons: [{ text: 'Cancel' }, { text: 'Delete', role: 'destructive', handler: () => {
-        this.showToast('Item deleted!');
+        this.showToast('❗️Item deleted!');
         this.resetForm();
       }}]
     });

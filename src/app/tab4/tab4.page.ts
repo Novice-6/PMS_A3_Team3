@@ -25,7 +25,6 @@ export class Tab4Page implements OnInit {
 
   ngOnInit() {}
 
-
   async showHelp() {
     const alert = await this.alertController.create({
       header: 'Privacy & Security Policy Help',
