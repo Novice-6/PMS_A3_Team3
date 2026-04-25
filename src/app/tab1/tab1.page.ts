@@ -10,9 +10,8 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
-import { InventoryService } from '../services/inventory';
 import { InventoryItem } from '../models/inventory.model';
-import { Subject, debounceTime, switchMap, tap } from 'rxjs';
+import { Subject, debounceTime, tap } from 'rxjs';
 
 @Component({
   selector: 'app-tab1',
@@ -28,7 +27,7 @@ export class Tab1Page implements OnInit {
   public searchTerm = '';
   private searchSubject = new Subject<string>();
 
-  // ✅ 固定13个商品，完全满足所有字段要求
+  // 13 items with unique names, auto-increment ID, all required fields
   private fixedInventory: InventoryItem[] = [
     {
       item_id: 1,
@@ -176,7 +175,6 @@ export class Tab1Page implements OnInit {
   ];
 
   constructor(
-    private inventoryService: InventoryService,
     private alertController: AlertController,
     private toastController: ToastController
   ) {}
@@ -186,23 +184,11 @@ export class Tab1Page implements OnInit {
     this.setupSearch();
   }
 
-  /**
-   * Load fixed 13 items (no server call)
-   */
   loadAllItems(): void {
-    try {
-      // ✅ 直接使用固定13个商品，名称唯一，字段完整
-      this.allItems = this.fixedInventory;
-      this.displayedItems = [...this.allItems];
-    } catch (error) {
-      this.showToast('Failed to load items', 'danger');
-      console.error('Error loading items:', error);
-    }
+    this.allItems = this.fixedInventory;
+    this.displayedItems = [...this.allItems];
   }
 
-  /**
-   * Setup search with debounce
-   */
   setupSearch(): void {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -211,37 +197,25 @@ export class Tab1Page implements OnInit {
         if (!keyword) {
           this.displayedItems = [...this.allItems];
         }
-      }),
-      switchMap((searchTerm) => {
-        const keyword = searchTerm.trim().toLowerCase();
-        if (!keyword) return [];
-
-        // ✅ 本地搜索（不从服务器读取，保证只显示13个）
-        const results = this.allItems.filter(item =>
-          item.item_name.toLowerCase().includes(keyword)
-        );
-        return [results];
       })
     ).subscribe({
-      next: (items: InventoryItem[]) => {
-        this.displayedItems = items;
-      },
-      error: (error) => {
-        console.error('Error searching items:', error);
+      next: (searchTerm) => {
+        const keyword = searchTerm.trim().toLowerCase();
+        if (!keyword) {
+          this.displayedItems = [...this.allItems];
+          return;
+        }
+        this.displayedItems = this.allItems.filter(item =>
+          item.item_name.toLowerCase().includes(keyword)
+        );
       }
     });
   }
 
-  /**
-   * Handle search input
-   */
   searchItem(): void {
     this.searchSubject.next(this.searchTerm);
   }
 
-  /**
-   * Show help information
-   */
   async showHelp(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Help Guide',
@@ -251,14 +225,10 @@ export class Tab1Page implements OnInit {
     await alert.present();
   }
 
-  /**
-   * Show toast message
-   */
   async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success'): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration: 2000,
-      position: 'bottom',
       color
     });
     await toast.present();
