@@ -6,17 +6,24 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+  styleUrls: ['tab2.page.scss'],
+  standalone: true,
+  imports: [
+    IonicModule,
+    ReactiveFormsModule,
+    HttpClientModule
+  ]
 })
 export class Tab2Page implements OnInit {
 
-  // API endpoint
+  // API endpoint provided by assignment
   private readonly API_URL = 'https://prog2005.it.scu.edu.au/ArtGalley';
 
   // Featured items list
