@@ -1,12 +1,43 @@
-/*
-  Title: Tab2 Page Styles
-  Author: Ma Xinrui and Hao Wang
-  Student ID: 24832562 and 24832782
-*/
+.form-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
 
-.error-message {
-  color: #c0392b; /* Red */
-  font-size: 0.8rem;
+ion-item {
+  --padding-start: 8px;
+  --inner-padding-end: 8px;
   margin-top: 4px;
-  margin-left: 16px;
+}
+
+// 🌟 错误信息的样式
+ion-text {
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  small {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+
+.submit-btn {
+  --border-radius: 8px;
+  height: 48px;
+  font-weight: bold;
+}
+
+.section-title {
+  padding: 16px 16px 8px 16px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  ion-icon {
+    margin-right: 8px;
+  }
+}
+
+.featured-card {
+  border-radius: 12px;
+  margin-top: 0;
 }
