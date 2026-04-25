@@ -7,14 +7,13 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Inventory List</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="showHelp()">Help</ion-button>
-    </ion-buttons>
+    <ion-button slot="end" (click)="showHelp()" fill="clear" color="light">
+      ❔ Help
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <!-- Search Bar -->
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionChange)="searchItem()"
@@ -22,12 +21,10 @@
     class="ion-padding"
   ></ion-searchbar>
 
-  <!-- Empty State -->
   <div *ngIf="displayedItems.length === 0" class="ion-text-center ion-padding">
     <p>No items to display</p>
   </div>
 
-  <!-- Item List with Card Layout (HD UI Standard) -->
   <ion-card *ngFor="let item of displayedItems" class="ion-margin">
     <ion-card-header>
       <ion-card-title>{{ item.item_name }}</ion-card-title>

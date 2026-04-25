@@ -2,7 +2,7 @@
  * Title: Tab2 Page - Add New Item & Featured Items
  * Author: Ma Xinrui
  * Student ID: 24832562
- * Description: Add new inventory item and show featured items
+ * Description: Add new inventory item and display featured items
  */
 
 import { Component, OnInit } from '@angular/core';
@@ -20,12 +20,15 @@ import { CommonModule } from '@angular/common';
 })
 export class Tab2Page implements OnInit {
 
+  // API URL from assignment
   private readonly API_URL = 'https://prog2005.it.scu.edu.au/ArtGalley';
 
+  // Data lists
   public featuredItems: any[] = [];
   public categories = ['Electronics', 'Furniture', 'Clothing', 'Tools', 'Miscellaneous'];
   public stockStatuses = ['In Stock', 'Low Stock', 'Out of Stock'];
 
+  // Add item form with validation
   addForm = this.fb.group({
     item_name: ['', Validators.required],
     category: ['', Validators.required],
@@ -46,17 +49,23 @@ export class Tab2Page implements OnInit {
     this.loadFeaturedItems();
   }
 
+  /**
+   * Load all featured items (featured_item = 1)
+   */
   loadFeaturedItems(): void {
     this.http.get<any[]>(this.API_URL).subscribe({
       next: (data: any[]) => {
-        this.featuredItems = data.filter(i => i.featured_item === 1);
+        this.featuredItems = data.filter(item => item.featured_item === 1);
       }
     });
   }
 
+  /**
+   * Submit new item to API
+   */
   addNewItem(): void {
     if (this.addForm.invalid) {
-      alert('Please fill all required fields');
+      alert('Please fill all required fields correctly');
       return;
     }
 
@@ -72,7 +81,10 @@ export class Tab2Page implements OnInit {
     });
   }
 
+  /**
+   * Show help information (Unified team style)
+   */
   showHelp(): void {
-    alert('Help: Add new items and view featured items below.');
+    alert('Help: Fill in the form to add a new inventory item. Featured items will be displayed below the form.');
   }
 }

@@ -64,6 +64,6 @@ export class Tab1Page implements OnInit {
   }
 
   showHelp(): void {
-    alert('Help: View and search inventory items.');
+    alert('Help: This page displays all inventory items. You can search items by entering the item name.');
   }
 }

@@ -7,15 +7,13 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Add New Item</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="showHelp()">Help</ion-button>
-    </ion-buttons>
+    <ion-button slot="end" (click)="showHelp()" fill="clear" color="light">
+      ❔ Help
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-
-  <!-- Add New Item Form -->
   <ion-card>
     <ion-card-header>
       <ion-card-title>Item Information</ion-card-title>
@@ -83,7 +81,6 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Featured Items Section -->
   <ion-card class="ion-margin-top">
     <ion-card-header>
       <ion-card-title>Featured Items</ion-card-title>
@@ -104,5 +101,4 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-
 </ion-content>
