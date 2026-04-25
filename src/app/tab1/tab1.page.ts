@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -26,7 +27,10 @@ export class Tab1Page implements OnInit {
   public displayedItems: any[] = [];
   public searchTerm = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private alertController: AlertController
+  ) {}
 
   ngOnInit(): void {
     this.loadAllItems();
@@ -63,7 +67,12 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  showHelp(): void {
-    alert('Help: This page displays all inventory items. You can search items by entering the item name.');
+  async showHelp(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Help Guide',
+      message: 'This page shows all inventory items. You can search items by name using the search bar.',
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 }
