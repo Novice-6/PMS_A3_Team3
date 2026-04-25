@@ -1,27 +1,24 @@
 <ion-tabs>
-  <ion-tab-bar slot="bottom">
+  <ion-tab-bar slot="bottom" class="custom-tab-bar">
     
-    <!-- Tab 1: 列表页 -->
     <ion-tab-button tab="list" href="/tabs/list">
-      <ion-icon aria-hidden="true" name="list-outline"></ion-icon>
+      <ion-icon name="list-outline"></ion-icon>
       <ion-label>Inventory</ion-label>
     </ion-tab-button>
 
-    <!-- Tab 2: 添加页 -->
     <ion-tab-button tab="add" href="/tabs/add">
-      <ion-icon aria-hidden="true" name="add-circle-outline"></ion-icon>
+      <!-- 🌟 给“添加”按钮一个实心的图标，让它更显眼 -->
+      <ion-icon name="add-circle"></ion-icon> 
       <ion-label>Add Item</ion-label>
     </ion-tab-button>
 
-    <!-- Tab 3: 更新/删除管理页 -->
     <ion-tab-button tab="manage" href="/tabs/manage">
-      <ion-icon aria-hidden="true" name="create-outline"></ion-icon>
+      <ion-icon name="options-outline"></ion-icon>
       <ion-label>Manage</ion-label>
     </ion-tab-button>
 
-    <!-- Tab 4: 隐私安全页 -->
     <ion-tab-button tab="privacy" href="/tabs/privacy">
-      <ion-icon aria-hidden="true" name="shield-checkmark-outline"></ion-icon>
+      <ion-icon name="shield-checkmark-outline"></ion-icon>
       <ion-label>Security</ion-label>
     </ion-tab-button>
 
