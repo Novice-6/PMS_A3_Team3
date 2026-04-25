@@ -2,11 +2,11 @@
  * Title: Tab1 Page - Inventory List & Search
  * Author: Ma Xinrui
  * Student ID: 24832562
- * Description: Displays all inventory items and supports searching by item name
+ * Description: Display all inventory items and search items by name
  */
 
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,58 +16,44 @@ import { FormsModule } from '@angular/forms';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    HttpClientModule
-  ]
+  imports: [IonicModule, CommonModule, FormsModule]
 })
 export class Tab1Page implements OnInit {
 
-  // API endpoint provided by assignment
   private readonly API_URL = 'https://prog2005.it.scu.edu.au/ArtGalley';
 
-  // Store all items and filtered items
   public allItems: any[] = [];
   public displayedItems: any[] = [];
-  public searchTerm: string = '';
+  public searchTerm = '';
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Load all items when page initialized
     this.loadAllItems();
   }
 
-  /**
-   * Load all inventory items from API
-   */
   loadAllItems(): void {
     this.http.get<any[]>(this.API_URL).subscribe({
-      next: (data) => {
+      next: (data: any[]) => {
         this.allItems = data;
         this.displayedItems = data;
       },
       error: () => {
-        alert('Failed to load inventory items');
+        alert('Failed to load items');
       }
     });
   }
 
-  /**
-   * Search item by name, show result or revert to full list
-   */
   searchItem(): void {
-    const keyword = this.searchTerm.trim().toLowerCase();
+    const keyword = this.searchTerm.trim();
 
     if (!keyword) {
       this.displayedItems = this.allItems;
       return;
     }
 
-    this.http.get(`${this.API_URL}/${keyword}`).subscribe({
-      next: (item) => {
+    this.http.get<any>(`${this.API_URL}/${keyword}`).subscribe({
+      next: (item: any) => {
         this.displayedItems = [item];
       },
       error: () => {
@@ -77,10 +63,7 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  /**
-   * Show help information
-   */
   showHelp(): void {
-    alert('Help: View all inventory items. Search by entering an item name.');
+    alert('Help: View and search inventory items.');
   }
 }

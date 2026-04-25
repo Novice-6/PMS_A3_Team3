@@ -2,38 +2,30 @@
  * Title: Tab2 Page - Add New Item & Featured Items
  * Author: Ma Xinrui
  * Student ID: 24832562
- * Description: Allows user to add new inventory items and displays featured items
+ * Description: Add new inventory item and show featured items
  */
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   standalone: true,
-  imports: [
-    IonicModule,
-    ReactiveFormsModule,
-    HttpClientModule
-  ]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule]
 })
 export class Tab2Page implements OnInit {
 
-  // API endpoint provided by assignment
   private readonly API_URL = 'https://prog2005.it.scu.edu.au/ArtGalley';
 
-  // Featured items list
   public featuredItems: any[] = [];
-
-  // Dropdown options
   public categories = ['Electronics', 'Furniture', 'Clothing', 'Tools', 'Miscellaneous'];
   public stockStatuses = ['In Stock', 'Low Stock', 'Out of Stock'];
 
-  // Add item form with validation
   addForm = this.fb.group({
     item_name: ['', Validators.required],
     category: ['', Validators.required],
@@ -54,23 +46,17 @@ export class Tab2Page implements OnInit {
     this.loadFeaturedItems();
   }
 
-  /**
-   * Load items where featured_item = 1
-   */
   loadFeaturedItems(): void {
     this.http.get<any[]>(this.API_URL).subscribe({
-      next: (data) => {
-        this.featuredItems = data.filter(item => item.featured_item === 1);
+      next: (data: any[]) => {
+        this.featuredItems = data.filter(i => i.featured_item === 1);
       }
     });
   }
 
-  /**
-   * Submit new item to API
-   */
   addNewItem(): void {
     if (this.addForm.invalid) {
-      alert('Please fill all required fields correctly');
+      alert('Please fill all required fields');
       return;
     }
 
@@ -86,10 +72,7 @@ export class Tab2Page implements OnInit {
     });
   }
 
-  /**
-   * Show help information
-   */
   showHelp(): void {
-    alert('Help: Fill the form to add a new item. Featured items are shown below.');
+    alert('Help: Add new items and view featured items below.');
   }
 }
