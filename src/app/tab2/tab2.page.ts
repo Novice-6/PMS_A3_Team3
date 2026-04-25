@@ -1,7 +1,7 @@
 /**
  * Title: Tab2 Page - Add New Item & Featured Items
- * Author: Ma Xinrui
- * Student ID: 24832562
+ * Author: Ma Xinrui and Hao Wang
+ * Student ID: 24832562 and 24832782
  * Description: This page allows users to add new inventory items
  * and display items marked as featured.
  */

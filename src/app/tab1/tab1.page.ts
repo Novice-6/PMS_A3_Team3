@@ -1,7 +1,7 @@
 /**
  * Title: Tab1 Page - Inventory List & Search
- * Author: Ma Xinrui
- * Student ID: 24832562
+ * Author: Ma Xinrui and Hao Wang
+ * Student ID: 24832562 and 24832782
  * Description: Display all inventory items and search items by name
  */
 
