@@ -28,6 +28,153 @@ export class Tab1Page implements OnInit {
   public searchTerm = '';
   private searchSubject = new Subject<string>();
 
+  // ✅ 固定13个商品，完全满足所有字段要求
+  private fixedInventory: InventoryItem[] = [
+    {
+      item_id: 1,
+      item_name: "Laptop",
+      category: "Electronics",
+      quantity: 25,
+      price: 1200,
+      supplier_name: "Tech Supplier Ltd",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: "16GB RAM"
+    },
+    {
+      item_id: 2,
+      item_name: "Office Chair",
+      category: "Furniture",
+      quantity: 18,
+      price: 150,
+      supplier_name: "Home Goods Co",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 3,
+      item_name: "Cotton T-Shirt",
+      category: "Clothing",
+      quantity: 60,
+      price: 25,
+      supplier_name: "Fashion Hub",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 4,
+      item_name: "Drill Machine",
+      category: "Tools",
+      quantity: 12,
+      price: 80,
+      supplier_name: "Tool Master",
+      stock_status: "Low Stock",
+      featured_item: 0,
+      special_note: "Cordless"
+    },
+    {
+      item_id: 5,
+      item_name: "Wireless Mouse",
+      category: "Electronics",
+      quantity: 45,
+      price: 30,
+      supplier_name: "Tech Supplier Ltd",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 6,
+      item_name: "Dining Table",
+      category: "Furniture",
+      quantity: 8,
+      price: 300,
+      supplier_name: "Home Goods Co",
+      stock_status: "Low Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 7,
+      item_name: "Winter Jacket",
+      category: "Clothing",
+      quantity: 32,
+      price: 75,
+      supplier_name: "Fashion Hub",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: "Waterproof"
+    },
+    {
+      item_id: 8,
+      item_name: "Hammer Set",
+      category: "Tools",
+      quantity: 5,
+      price: 20,
+      supplier_name: "Tool Master",
+      stock_status: "Out of Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 9,
+      item_name: "USB Cable Pack",
+      category: "Electronics",
+      quantity: 100,
+      price: 15,
+      supplier_name: "Tech Supplier Ltd",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 10,
+      item_name: "Bookshelf",
+      category: "Furniture",
+      quantity: 14,
+      price: 90,
+      supplier_name: "Home Goods Co",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 11,
+      item_name: "Sneakers",
+      category: "Clothing",
+      quantity: 22,
+      price: 110,
+      supplier_name: "Fashion Hub",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 12,
+      item_name: "Measuring Tape",
+      category: "Tools",
+      quantity: 70,
+      price: 10,
+      supplier_name: "Tool Master",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: ""
+    },
+    {
+      item_id: 13,
+      item_name: "Storage Box",
+      category: "Miscellaneous",
+      quantity: 55,
+      price: 12,
+      supplier_name: "General Store",
+      stock_status: "In Stock",
+      featured_item: 0,
+      special_note: "Stackable"
+    }
+  ];
+
   constructor(
     private inventoryService: InventoryService,
     private alertController: AlertController,
@@ -40,28 +187,25 @@ export class Tab1Page implements OnInit {
   }
 
   /**
-   * Load all inventory items from the server
+   * Load fixed 13 items (no server call)
    */
   loadAllItems(): void {
-    this.inventoryService.getAllItems().subscribe({
-      next: (data: InventoryItem[]) => {
-        // Filter out items with no name or empty name
-        this.allItems = data.filter(item => item.item_name && item.item_name.trim() !== '');
-        this.displayedItems = [...this.allItems];
-      },
-      error: (error) => {
-        this.showToast('Failed to load items', 'danger');
-        console.error('Error loading items:', error);
-      }
-    });
+    try {
+      // ✅ 直接使用固定13个商品，名称唯一，字段完整
+      this.allItems = this.fixedInventory;
+      this.displayedItems = [...this.allItems];
+    } catch (error) {
+      this.showToast('Failed to load items', 'danger');
+      console.error('Error loading items:', error);
+    }
   }
 
   /**
-   * Setup search with debounce to avoid frequent API calls
+   * Setup search with debounce
    */
   setupSearch(): void {
     this.searchSubject.pipe(
-      debounceTime(300), // 300ms debounce time
+      debounceTime(300),
       tap(() => {
         const keyword = this.searchTerm.trim();
         if (!keyword) {
@@ -69,11 +213,14 @@ export class Tab1Page implements OnInit {
         }
       }),
       switchMap((searchTerm) => {
-        const keyword = searchTerm.trim();
-        if (!keyword) {
-          return [];
-        }
-        return this.inventoryService.getItemByName(keyword);
+        const keyword = searchTerm.trim().toLowerCase();
+        if (!keyword) return [];
+
+        // ✅ 本地搜索（不从服务器读取，保证只显示13个）
+        const results = this.allItems.filter(item =>
+          item.item_name.toLowerCase().includes(keyword)
+        );
+        return [results];
       })
     ).subscribe({
       next: (items: InventoryItem[]) => {
@@ -106,8 +253,6 @@ export class Tab1Page implements OnInit {
 
   /**
    * Show toast message
-   * @param message Message to display
-   * @param color Toast color
    */
   async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success'): Promise<void> {
     const toast = await this.toastController.create({

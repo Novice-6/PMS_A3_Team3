@@ -1,5 +1,7 @@
 {
   "name": "PMS-A3-Inventory",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular-standalone"
 }

@@ -1,14 +1,8 @@
-<!--
-  Title: Inventory List & Search Page
-  Author: Ma Xinrui and Hao Wang
-  Student ID: 24832562 and 24832782
--->
-
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Inventory List</ion-title>
     <ion-button slot="end" (click)="showHelp()" fill="solid" color="light">
-     Help
+     HELP
     </ion-button>
   </ion-toolbar>
 </ion-header>
@@ -47,6 +41,7 @@
     </ion-card-header>
 
     <ion-card-content>
+      <p>ID: {{ item.item_id }}</p>
       <p>Quantity: {{ item.quantity }}</p>
       <p>Price: ${{ item.price }}</p>
       <p>Supplier: {{ item.supplier_name }}</p>
