@@ -40,7 +40,7 @@ export class Tab1Page implements OnInit {
     this.http.get<any[]>(this.API_URL).subscribe({
       next: (data: any[]) => {
         this.allItems = data;
-        this.displayedItems = data;
+        this.displayedItems = [...data];
       },
       error: () => {
         alert('Failed to load items');
@@ -49,22 +49,16 @@ export class Tab1Page implements OnInit {
   }
 
   searchItem(): void {
-    const keyword = this.searchTerm.trim();
+    const keyword = this.searchTerm.trim().toLowerCase();
 
     if (!keyword) {
-      this.displayedItems = this.allItems;
+      this.displayedItems = [...this.allItems];
       return;
     }
 
-    this.http.get<any>(`${this.API_URL}/${keyword}`).subscribe({
-      next: (item: any) => {
-        this.displayedItems = [item];
-      },
-      error: () => {
-        alert('Item not found');
-        this.displayedItems = [];
-      }
-    });
+    this.displayedItems = this.allItems.filter(item =>
+      item.item_name.toLowerCase().includes(keyword)
+    );
   }
 
   async showHelp(): Promise<void> {

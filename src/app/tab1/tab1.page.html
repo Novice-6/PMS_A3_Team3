@@ -16,7 +16,7 @@
 <ion-content>
   <ion-searchbar
     [(ngModel)]="searchTerm"
-    (ionChange)="searchItem()"
+    (ionInput)="searchItem()"
     placeholder="Search item by name"
     class="ion-padding"
   ></ion-searchbar>
