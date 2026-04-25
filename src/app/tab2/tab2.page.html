@@ -1,7 +1,7 @@
 <!--
   Title: Add New Item & Featured Items
-  Author: Ma Xinrui
-  Student ID: 24832562
+  Author: Ma Xinrui and Hao Wang
+  Student ID: 24832562 and 24832782
 -->
 
 <ion-header>
@@ -22,42 +22,62 @@
     <ion-card-content>
       <form [formGroup]="addForm" (ngSubmit)="addNewItem()">
         <ion-item>
-          <ion-label position="stacked">Item Name *</ion-label>
+          <ion-label position="floating">Item Name *</ion-label>
           <ion-input formControlName="item_name"></ion-input>
         </ion-item>
+        <div *ngIf="addForm.get('item_name')?.invalid && addForm.get('item_name')?.touched" class="error-message">
+          Item name is required
+        </div>
 
         <ion-item>
-          <ion-label position="stacked">Category *</ion-label>
+          <ion-label position="floating">Category *</ion-label>
           <ion-select formControlName="category">
             <ion-select-option *ngFor="let cat of categories" [value]="cat">
               {{ cat }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <div *ngIf="addForm.get('category')?.invalid && addForm.get('category')?.touched" class="error-message">
+          Category is required
+        </div>
 
         <ion-item>
-          <ion-label position="stacked">Quantity *</ion-label>
+          <ion-label position="floating">Quantity *</ion-label>
           <ion-input type="number" formControlName="quantity"></ion-input>
         </ion-item>
+        <div *ngIf="addForm.get('quantity')?.invalid && addForm.get('quantity')?.touched" class="error-message">
+          <div *ngIf="addForm.get('quantity')?.errors?.['required']">Quantity is required</div>
+          <div *ngIf="addForm.get('quantity')?.errors?.['min']">Quantity must be at least 1</div>
+        </div>
 
         <ion-item>
-          <ion-label position="stacked">Price *</ion-label>
+          <ion-label position="floating">Price *</ion-label>
           <ion-input type="number" formControlName="price"></ion-input>
         </ion-item>
+        <div *ngIf="addForm.get('price')?.invalid && addForm.get('price')?.touched" class="error-message">
+          <div *ngIf="addForm.get('price')?.errors?.['required']">Price is required</div>
+          <div *ngIf="addForm.get('price')?.errors?.['min']">Price must be at least 0</div>
+        </div>
 
         <ion-item>
-          <ion-label position="stacked">Supplier *</ion-label>
+          <ion-label position="floating">Supplier *</ion-label>
           <ion-input formControlName="supplier_name"></ion-input>
         </ion-item>
+        <div *ngIf="addForm.get('supplier_name')?.invalid && addForm.get('supplier_name')?.touched" class="error-message">
+          Supplier name is required
+        </div>
 
         <ion-item>
-          <ion-label position="stacked">Stock Status *</ion-label>
+          <ion-label position="floating">Stock Status *</ion-label>
           <ion-select formControlName="stock_status">
             <ion-select-option *ngFor="let s of stockStatuses" [value]="s">
               {{ s }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <div *ngIf="addForm.get('stock_status')?.invalid && addForm.get('stock_status')?.touched" class="error-message">
+          Stock status is required
+        </div>
 
         <ion-item>
           <ion-label>Mark as Featured</ion-label>
