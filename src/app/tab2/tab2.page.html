@@ -1,17 +1,108 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+<!--
+  Title: Add New Item & Featured Items
+  Author: Ma Xinrui
+  Student ID: 24832562
+-->
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Add New Item</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="showHelp()">Help</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <!-- Add New Item Form -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Item Information</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="addForm" (ngSubmit)="addNewItem()">
+        <ion-item>
+          <ion-label position="stacked">Item Name *</ion-label>
+          <ion-input formControlName="item_name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Category *</ion-label>
+          <ion-select formControlName="category">
+            <ion-select-option *ngFor="let cat of categories" [value]="cat">
+              {{ cat }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Quantity *</ion-label>
+          <ion-input type="number" formControlName="quantity"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Price *</ion-label>
+          <ion-input type="number" formControlName="price"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Supplier *</ion-label>
+          <ion-input formControlName="supplier_name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Stock Status *</ion-label>
+          <ion-select formControlName="stock_status">
+            <ion-select-option *ngFor="let s of stockStatuses" [value]="s">
+              {{ s }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Mark as Featured</ion-label>
+          <ion-checkbox formControlName="featured_item"></ion-checkbox>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Special Note</ion-label>
+          <ion-textarea formControlName="special_note"></ion-textarea>
+        </ion-item>
+
+        <ion-button
+          expand="block"
+          type="submit"
+          class="ion-margin-top"
+          [disabled]="addForm.invalid"
+        >
+          Add Item
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Featured Items Section -->
+  <ion-card class="ion-margin-top">
+    <ion-card-header>
+      <ion-card-title>Featured Items</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div *ngIf="featuredItems.length === 0">
+        <p>No featured items yet</p>
+      </div>
+
+      <ion-list>
+        <ion-item *ngFor="let item of featuredItems">
+          <ion-label>
+            <h3>{{ item.item_name }}</h3>
+            <p>{{ item.category }} | Qty: {{ item.quantity }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
