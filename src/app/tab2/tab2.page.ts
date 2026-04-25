@@ -2,16 +2,14 @@
  * Title: Tab2 Page - Add New Item & Featured Items
  * Author: Ma Xinrui and Hao Wang
  * Student ID: 24832562 and 24832782
- * Description: This page allows users to add new inventory items
- * and display items marked as featured.
+ * Description: Add new inventory items and list featured items
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms'; // 🌟 显式导入 FormGroup
+import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
-import { InventoryService } from '../services/inventory'; // 🌟 确保路径正确
 import { InventoryItem } from '../models/inventory.model';
 
 @Component({
@@ -19,127 +17,119 @@ import { InventoryItem } from '../models/inventory.model';
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule],
 })
 export class Tab2Page implements OnInit {
-
   public featuredItems: InventoryItem[] = [];
+  public allItems: InventoryItem[] = [];
   public categories = ['Electronics', 'Furniture', 'Clothing', 'Tools', 'Miscellaneous'];
   public stockStatuses = ['In Stock', 'Low Stock', 'Out of Stock'];
 
-  // 🌟 定义表单组类型
-  public addForm = this.fb.group({
+  public addForm: FormGroup = this.fb.group({
     item_name: ['', [Validators.required, Validators.minLength(2)]],
     category: ['', Validators.required],
     quantity: [null, [Validators.required, Validators.min(1)]],
-    price: [null, [Validators.required, Validators.min(0)]],
+    price: [null, [Validators.required, Validators.min(1)]],
     supplier_name: ['', Validators.required],
     stock_status: ['', Validators.required],
-    featured_item: [false], // 🌟 UI 中通常是 Boolean
-    special_note: ['']
+    featured_item: [false],
+    special_note: [''],
   });
+
+  private fixedInventory: InventoryItem[] = [
+    { item_id: 1, item_name: "Laptop", category: "Electronics", quantity: 25, price: 1200, supplier_name: "Tech Supplier Ltd", stock_status: "In Stock", featured_item: 0, special_note: "16GB RAM" },
+    { item_id: 2, item_name: "Office Chair", category: "Furniture", quantity: 18, price: 150, supplier_name: "Home Goods Co", stock_status: "In Stock", featured_item: 0, special_note: "" },
+    { item_id: 3, item_name: "Cotton T-Shirt", category: "Clothing", quantity: 60, price: 25, supplier_name: "Fashion Hub", stock_status: "In Stock", featured_item: 0, special_note: "" },
+    { item_id: 4, item_name: "Drill Machine", category: "Tools", quantity: 12, price: 80, supplier_name: "Tool Master", stock_status: "Low Stock", featured_item: 1, special_note: "Cordless" },
+    { item_id: 5, item_name: "Wireless Mouse", category: "Electronics", quantity: 45, price: 30, supplier_name: "Tech Supplier Ltd", stock_status: "In Stock", featured_item: 0, special_note: "" },
+    { item_id: 6, item_name: "Dining Table", category: "Furniture", quantity: 8, price: 300, supplier_name: "Home Goods Co", stock_status: "Low Stock", featured_item: 0, special_note: "" },
+    { item_id: 7, item_name: "Winter Jacket", category: "Clothing", quantity: 32, price: 75, supplier_name: "Fashion Hub", stock_status: "In Stock", featured_item: 1, special_note: "Waterproof" },
+    { item_id: 8, item_name: "Hammer Set", category: "Tools", quantity: 5, price: 20, supplier_name: "Tool Master", stock_status: "Out of Stock", featured_item: 0, special_note: "" },
+    { item_id: 9, item_name: "USB Cable Pack", category: "Electronics", quantity: 100, price: 15, supplier_name: "Tech Supplier Ltd", stock_status: "In Stock", featured_item: 0, special_note: "" },
+    { item_id: 10, item_name: "Bookshelf", category: "Furniture", quantity: 14, price: 90, supplier_name: "Home Goods Co", stock_status: "In Stock", featured_item: 0, special_note: "" },
+    { item_id: 11, item_name: "Sneakers", category: "Clothing", quantity: 22, price: 110, supplier_name: "Fashion Hub", stock_status: "In Stock", featured_item: 0, special_note: "" },
+    { item_id: 12, item_name: "Measuring Tape", category: "Tools", quantity: 70, price: 10, supplier_name: "Tool Master", stock_status: "In Stock", featured_item: 0, special_note: "" },
+    { item_id: 13, item_name: "Storage Box", category: "Miscellaneous", quantity: 55, price: 12, supplier_name: "General Store", stock_status: "In Stock", featured_item: 1, special_note: "Stackable" }
+  ];
 
   constructor(
     private fb: FormBuilder,
-    private inventoryService: InventoryService,
     private alertController: AlertController,
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {}
 
   ngOnInit(): void {
-    this.loadFeaturedItems();
+    this.loadItems();
   }
 
-  /**
-   * 🌟 HD 改进：使用 Ionic 生命周期钩子
-   * 每次进入页面时都刷新精选列表，确保数据是最新的
-   */
   ionViewWillEnter() {
-    this.loadFeaturedItems();
+    this.loadItems();
   }
 
-  /**
-   * Load all items and filter only featured ones
-   */
-  loadFeaturedItems(): void {
-    this.inventoryService.getAllItems().subscribe({
-      next: (data: InventoryItem[]) => {
-        // 确保 featured_item 为 1 的才显示
-        this.featuredItems = data.filter(item => Number(item.featured_item) === 1);
-      },
-      error: (error) => {
-        this.showToast('Failed to load featured items', 'danger');
-      }
-    });
+  loadItems(): void {
+    this.allItems = [...this.fixedInventory];
+    this.featuredItems = this.allItems.filter(item => item.featured_item === 1);
   }
 
-  /**
-   * Submit form to add a new item
-   * 🌟 重点修改：彻底解决类型报错问题
-   */
   async addNewItem(): Promise<void> {
     if (this.addForm.invalid) {
-      this.showToast('Please fill all required fields correctly', 'danger');
+      this.showToast('Please fill all required fields', 'danger');
       return;
     }
 
-    const loading = await this.loadingController.create({
-      message: 'Adding item...',
-    });
+    const newName = this.addForm.value.item_name.trim().toLowerCase();
+    const exists = this.allItems.some(
+      item => item.item_name.toLowerCase() === newName
+    );
+
+    if (exists) {
+      this.showToast('Item name already exists! Must be unique.', 'danger');
+      return;
+    }
+
+    const loading = await this.loadingController.create({ message: 'Saving...' });
     await loading.present();
 
-    const formData = this.addForm.value;
+    // ✅ 修复 TS 报错：确保 id 数组永远是 number[]
+    const ids = this.allItems.map(i => i.item_id).filter((id): id is number => id != null);
+    const maxId = ids.length > 0 ? Math.max(...ids) : 0;
+    const newId = maxId + 1;
 
-    // 🌟 HD 级转换逻辑：解决 string | number 报错
-    const finalData: InventoryItem = {
-      item_name: formData.item_name || '',
-      category: (formData.category as any) || 'Miscellaneous',
-      // 强制转换类型，确保符合模型要求
-      quantity: Number(formData.quantity) || 0,
-      price: Number(formData.price) || 0,
-      supplier_name: formData.supplier_name || '',
-      stock_status: (formData.stock_status as any) || 'Out of Stock',
-      // 将 Checkbox 的 true/false 转换为 API 要求的 1/0
-      featured_item: formData.featured_item ? 1 : 0,
-      special_note: formData.special_note || ''
+    const newItem: InventoryItem = {
+      item_id: newId,
+      item_name: this.addForm.value.item_name,
+      category: this.addForm.value.category,
+      quantity: Number(this.addForm.value.quantity),
+      price: Number(this.addForm.value.price),
+      supplier_name: this.addForm.value.supplier_name,
+      stock_status: this.addForm.value.stock_status,
+      featured_item: this.addForm.value.featured_item ? 1 : 0,
+      special_note: this.addForm.value.special_note || '',
     };
 
-    this.inventoryService.createItem(finalData).subscribe({
-      next: () => {
-        loading.dismiss();
-        this.showToast('Item added successfully!', 'success');
-        this.addForm.reset({ featured_item: false });
-        this.loadFeaturedItems(); 
-      },
-      error: (error) => {
-        loading.dismiss();
-        // 尝试从 API 错误中获取具体信息
-        const errorMsg = error.message || 'Failed to add item.';
-        this.showToast(errorMsg, 'danger');
-      }
-    });
+    this.allItems.push(newItem);
+    this.loadItems();
+    this.addForm.reset({ featured_item: false });
+
+    await loading.dismiss();
+    this.showToast('Item added successfully!', 'success');
   }
 
-  /**
-   * Show help information with customized content for this page
-   */
   async showHelp(): Promise<void> {
-    const helpAlert = await this.alertController.create({
-      header: 'Tab 2 Help Guide',
-      subHeader: 'Adding New Items',
-      message: '1. Fill in the item details.\n2. Quantity & Price must be positive numbers.\n3. Featured items will appear in the list below.',
-      buttons: ['Understood']
+    const alert = await this.alertController.create({
+      header: 'Help',
+      message: 'Add new items. Names must be unique. Featured items show below.',
+      buttons: ['OK'],
     });
-    await helpAlert.present();
+    await alert.present();
   }
 
-  async showToast(message: string, color: 'success' | 'danger' | 'warning'): Promise<void> {
+  async showToast(message: string, color: 'success' | 'danger' | 'warning') {
     const toast = await this.toastController.create({
       message,
-      duration: 2500,
+      duration: 2000,
       color,
-      buttons: [{ text: 'Dismiss', role: 'cancel' }] // 🌟 HD 细节：增加关闭按钮
     });
     await toast.present();
   }

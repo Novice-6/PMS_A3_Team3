@@ -5,120 +5,77 @@
 -->
 
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Add New Item</ion-title>
+  <ion-toolbar color="secondary">
+    <ion-title>Add Item & Featured</ion-title>
     <ion-button slot="end" (click)="showHelp()" fill="solid" color="light">
-     Help
+      Help
     </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-card class="form-card">
+  <!-- Add New Item Form -->
+  <ion-card>
     <ion-card-header>
-      <ion-card-title>Item Information</ion-card-title>
+      <ion-card-title>Add New Inventory Item</ion-card-title>
     </ion-card-header>
-
     <ion-card-content>
       <form [formGroup]="addForm" (ngSubmit)="addNewItem()">
-        
-        <!-- 🌟 使用 label-placement="floating" 解决重叠 -->
-        <ion-item lines="full">
-          <ion-input 
-            label="Item Name *" 
-            label-placement="floating" 
-            formControlName="item_name" 
-            placeholder="Enter name">
-          </ion-input>
-        </ion-item>
-        <ion-text color="danger" class="ion-padding-start" *ngIf="addForm.get('item_name')?.invalid && addForm.get('item_name')?.touched">
-          <small>Item name is required (min 2 chars)</small>
-        </ion-text>
+        <ion-list>
+          <ion-item>
+            <ion-label position="stacked">Item Name *</ion-label>
+            <ion-input formControlName="item_name" required></ion-input>
+          </ion-item>
 
-        <ion-item lines="full">
-          <ion-select 
-            label="Category *" 
-            label-placement="floating" 
-            formControlName="category">
-            <ion-select-option *ngFor="let cat of categories" [value]="cat">
-              {{ cat }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-text color="danger" class="ion-padding-start" *ngIf="addForm.get('category')?.invalid && addForm.get('category')?.touched">
-          <small>Category is required</small>
-        </ion-text>
+          <ion-item>
+            <ion-label position="stacked">Category *</ion-label>
+            <ion-select formControlName="category" required>
+              <ion-select-option *ngFor="let c of categories" [value]="c">
+                {{ c }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
 
-        <ion-item lines="full">
-          <ion-input 
-            label="Quantity *" 
-            label-placement="floating" 
-            type="number" 
-            formControlName="quantity">
-          </ion-input>
-        </ion-item>
-        <ion-text color="danger" class="ion-padding-start" *ngIf="addForm.get('quantity')?.invalid && addForm.get('quantity')?.touched">
-          <small *ngIf="addForm.get('quantity')?.errors?.['required']">Quantity is required</small>
-          <small *ngIf="addForm.get('quantity')?.errors?.['min']">Minimum is 1</small>
-        </ion-text>
+          <ion-item>
+            <ion-label position="stacked">Quantity *</ion-label>
+            <ion-input type="number" formControlName="quantity" required></ion-input>
+          </ion-item>
 
-        <ion-item lines="full">
-          <ion-input 
-            label="Price ($) *" 
-            label-placement="floating" 
-            type="number" 
-            formControlName="price">
-          </ion-input>
-        </ion-item>
-        <ion-text color="danger" class="ion-padding-start" *ngIf="addForm.get('price')?.invalid && addForm.get('price')?.touched">
-          <small *ngIf="addForm.get('price')?.errors?.['required']">Price is required</small>
-          <small *ngIf="addForm.get('price')?.errors?.['min']">Price must be at least 0</small>
-        </ion-text>
+          <ion-item>
+            <ion-label position="stacked">Price (Integer) *</ion-label>
+            <ion-input type="number" formControlName="price" required></ion-input>
+          </ion-item>
 
-        <ion-item lines="full">
-          <ion-input 
-            label="Supplier *" 
-            label-placement="floating" 
-            formControlName="supplier_name">
-          </ion-input>
-        </ion-item>
-        <ion-text color="danger" class="ion-padding-start" *ngIf="addForm.get('supplier_name')?.invalid && addForm.get('supplier_name')?.touched">
-          <small>Supplier name is required</small>
-        </ion-text>
+          <ion-item>
+            <ion-label position="stacked">Supplier Name *</ion-label>
+            <ion-input formControlName="supplier_name" required></ion-input>
+          </ion-item>
 
-        <ion-item lines="full">
-          <ion-select 
-            label="Stock Status *" 
-            label-placement="floating" 
-            formControlName="stock_status">
-            <ion-select-option *ngFor="let s of stockStatuses" [value]="s">
-              {{ s }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-text color="danger" class="ion-padding-start" *ngIf="addForm.get('stock_status')?.invalid && addForm.get('stock_status')?.touched">
-          <small>Stock status is required</small>
-        </ion-text>
+          <ion-item>
+            <ion-label position="stacked">Stock Status *</ion-label>
+            <ion-select formControlName="stock_status" required>
+              <ion-select-option *ngFor="let s of stockStatuses" [value]="s">
+                {{ s }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
 
-        <ion-item lines="none" class="ion-margin-top">
-          <ion-checkbox formControlName="featured_item" justify="space-between">
-            Mark as Featured
-          </ion-checkbox>
-        </ion-item>
+          <ion-item>
+            <ion-label>Featured Item</ion-label>
+            <ion-toggle formControlName="featured_item" slot="end"></ion-toggle>
+          </ion-item>
 
-        <ion-item lines="full" class="ion-margin-top">
-          <ion-textarea 
-            label="Special Note" 
-            label-placement="floating" 
-            formControlName="special_note"
-            [autoGrow]="true">
-          </ion-textarea>
-        </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Special Note (Optional)</ion-label>
+            <ion-input formControlName="special_note"></ion-input>
+          </ion-item>
+        </ion-list>
 
         <ion-button
-          expand="block"
           type="submit"
-          class="ion-margin-top submit-btn"
+          expand="block"
+          color="primary"
+          class="ion-margin-top"
           [disabled]="addForm.invalid"
         >
           Add New Item
@@ -127,25 +84,25 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Featured Items Section -->
-  <div class="section-title">
-    <ion-icon name="star" color="warning"></ion-icon>
-    Featured Items
-  </div>
+  <!-- Featured Items List (NO DIRTY DATA!) -->
+  <ion-card class="ion-margin-top">
+    <ion-card-header color="warning">
+      <ion-card-title>Featured Items</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let item of featuredItems">
+          <ion-label>
+            <h3><strong>{{ item.item_name }}</strong></h3>
+            <p>{{ item.category }} • Qty: {{ item.quantity }}</p>
+            <p color="warning"><strong>Featured</strong></p>
+          </ion-label>
+        </ion-item>
 
-  <ion-card class="featured-card">
-    <ion-list lines="inset">
-      <div *ngIf="featuredItems.length === 0" class="ion-padding ion-text-center">
-        <ion-note>No featured items yet</ion-note>
-      </div>
-      <ion-item *ngFor="let item of featuredItems">
-        <ion-icon slot="start" name="pricetag" color="primary"></ion-icon>
-        <ion-label>
-          <h2 style="font-weight: bold;">{{ item.item_name }}</h2>
-          <p>{{ item.category }} • Qty: {{ item.quantity }}</p>
-        </ion-label>
-        <ion-badge slot="end" color="primary">Featured</ion-badge>
-      </ion-item>
-    </ion-list>
+        <ion-item *ngIf="featuredItems.length === 0">
+          <ion-label class="ion-text-center">No featured items</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
   </ion-card>
 </ion-content>
