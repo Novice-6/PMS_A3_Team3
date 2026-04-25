@@ -45,8 +45,9 @@ export class Tab1Page implements OnInit {
   loadAllItems(): void {
     this.inventoryService.getAllItems().subscribe({
       next: (data: InventoryItem[]) => {
-        this.allItems = data;
-        this.displayedItems = [...data];
+        // Filter out items with no name or empty name
+        this.allItems = data.filter(item => item.item_name && item.item_name.trim() !== '');
+        this.displayedItems = [...this.allItems];
       },
       error: (error) => {
         this.showToast('Failed to load items', 'danger');
