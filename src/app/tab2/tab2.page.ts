@@ -26,7 +26,12 @@ export class Tab2Page implements OnInit {
   public stockStatuses = ['In Stock', 'Low Stock', 'Out of Stock'];
 
   public addForm: FormGroup = this.fb.group({
-    item_name: ['', [Validators.required, Validators.minLength(2)]],
+    item_name: ['', [
+      Validators.required,
+      Validators.minLength(2),
+      // ✅ 禁止输入数字！只能字母/空格
+      Validators.pattern(/^[A-Za-z\s]+$/)
+    ]],
     category: ['', Validators.required],
     quantity: [null, [Validators.required, Validators.min(1)]],
     price: [null, [Validators.required, Validators.min(1)]],
@@ -74,7 +79,7 @@ export class Tab2Page implements OnInit {
 
   async addNewItem(): Promise<void> {
     if (this.addForm.invalid) {
-      this.showToast('Please fill all required fields', 'danger');
+      this.showToast('Item name cannot contain numbers!', 'danger');
       return;
     }
 
@@ -115,7 +120,6 @@ export class Tab2Page implements OnInit {
     this.showToast('Item added successfully!', 'success');
   }
 
-  // ✅ 弹出商品详情（修复报错）
   async showItemDetails(item: InventoryItem): Promise<void> {
     const alert = await this.alertController.create({
       header: `Item Details (ID: ${item.item_id})`,
@@ -136,7 +140,7 @@ export class Tab2Page implements OnInit {
   async showHelp(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Help',
-      message: 'Add new items. Names must be unique. Featured items show below.',
+      message: 'Add new items. Names must be unique and cannot contain numbers.',
       buttons: ['OK'],
     });
     await alert.present();
