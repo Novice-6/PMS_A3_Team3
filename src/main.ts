@@ -16,7 +16,9 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
+    provideIonicAngular({
+      mode: 'md' // 🌟 强制安卓模式，这会极大提高模拟器的渲染成功率
+    }),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     // 🌟 将提供者注册到全局
     provideHttpClient(),

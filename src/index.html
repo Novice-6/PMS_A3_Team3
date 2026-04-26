@@ -2,10 +2,17 @@
 <html lang="en">
 
 <head>
+  <base href="./" />
+  <script>
+  // 🌟 强行修复安卓端的 Base URL 报错
+  window.addEventListener('load', function() {
+    if (window.location.href.indexOf('localhost') > -1) {
+      const base = document.querySelector('base');
+      if (base) base.href = window.location.origin + '/';
+    }
+  });</script>
   <meta charset="utf-8" />
   <title>Ionic App</title>
-
-  <base href="/" />
 
   <meta name="color-scheme" content="light dark" />
   <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
