@@ -84,16 +84,21 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Featured Items List (NO DIRTY DATA!) -->
+  <!-- Featured Items List -->
   <ion-card class="ion-margin-top">
     <ion-card-header color="warning">
       <ion-card-title>Featured Items</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngFor="let item of featuredItems">
+        <ion-item 
+          button 
+          detail 
+          *ngFor="let item of featuredItems"
+          (click)="showItemDetails(item)"
+        >
           <ion-label>
-            <h3><strong>{{ item.item_name }}</strong></h3>
+            <h3><strong>ID: {{ item.item_id }} | {{ item.item_name }}</strong></h3>
             <p>{{ item.category }} • Qty: {{ item.quantity }}</p>
             <p color="warning"><strong>Featured</strong></p>
           </ion-label>

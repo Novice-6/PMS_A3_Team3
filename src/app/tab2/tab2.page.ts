@@ -91,8 +91,7 @@ export class Tab2Page implements OnInit {
     const loading = await this.loadingController.create({ message: 'Saving...' });
     await loading.present();
 
-    // ✅ 修复 TS 报错：确保 id 数组永远是 number[]
-    const ids = this.allItems.map(i => i.item_id).filter((id): id is number => id != null);
+    const ids = this.allItems.map(i => i.item_id).filter(id => id != null);
     const maxId = ids.length > 0 ? Math.max(...ids) : 0;
     const newId = maxId + 1;
 
@@ -114,6 +113,24 @@ export class Tab2Page implements OnInit {
 
     await loading.dismiss();
     this.showToast('Item added successfully!', 'success');
+  }
+
+  // ✅ 弹出商品详情（修复报错）
+  async showItemDetails(item: InventoryItem): Promise<void> {
+    const alert = await this.alertController.create({
+      header: `Item Details (ID: ${item.item_id})`,
+      message: `
+        Name: ${item.item_name}
+        Category: ${item.category}
+        Quantity: ${item.quantity}
+        Price: $${item.price}
+        Supplier: ${item.supplier_name}
+        Status: ${item.stock_status}
+        Note: ${item.special_note || 'None'}
+      `,
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
   async showHelp(): Promise<void> {
