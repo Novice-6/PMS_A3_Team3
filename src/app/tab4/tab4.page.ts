@@ -25,7 +25,6 @@ export class Tab4Page implements OnInit {
 
   ngOnInit() {}
 
-  // 帮助弹窗
   async showHelp() {
     const alert = await this.alertController.create({
       header: 'Privacy & Security Policy Help',
@@ -35,7 +34,7 @@ export class Tab4Page implements OnInit {
     await alert.present();
   }
 
-  // ✅ 新增：安全摘要弹窗（高分加分项）
+  // 快速安全弹窗
   async showSecuritySummary() {
     const alert = await this.alertController.create({
       header: 'Quick Security Overview',
