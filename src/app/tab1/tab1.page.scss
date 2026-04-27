@@ -15,3 +15,29 @@
 .out-of-stock {
   color: #c0392b; /* Red */
 }
+
+.inventory-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+  border-left: 4px solid var(--ion-color-primary); // 🌟 左侧装饰条
+}
+
+ion-badge {
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+b {
+  color: var(--ion-color-dark);
+}
+
+ion-title {
+
+font-size : 18px ;
+
+font-weight : 700 ;
+
+letter-spacing : 0.5px ;
+
+}

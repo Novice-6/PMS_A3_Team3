@@ -1,115 +1,97 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Inventory Item Management</ion-title>
+    <ion-title>Manage Inventory</ion-title>
     <ion-button slot="end" (click)="showHelp()" fill="solid" color="light">
      Help
     </ion-button>
   </ion-toolbar>
 </ion-header>
-   
-<ion-content class="page-bg">
-  <ion-card class="glass-card">
-    <ion-card-header class="card-header-custom">
-      <ion-card-title class="card-title-custom">
-        Search Inventory Item
-      </ion-card-title>
+
+<ion-content class="ion-padding">
+  <!-- 搜索卡片 -->
+  <ion-card class="search-card ion-no-margin ion-margin-bottom">
+    <ion-card-header>
+      <ion-card-title style="font-size: 1rem; font-weight: bold;">Search for Item</ion-card-title>
     </ion-card-header>
-    <ion-card-content class="card-content-custom">
-      <ion-input 
-        class="input-custom"
-        placeholder="Enter item name" 
-        #searchInput
-        clearInput
-      ></ion-input>
-      <ion-button 
-        expand="block" 
-        class="btn-primary"
-        (click)="searchItemByName($any(searchInput.value))"
-      >
-        Search Item
+    <ion-card-content>
+      <ion-item lines="outline" class="custom-input-item">
+        <ion-input 
+          placeholder="Enter unique item name" 
+          #searchInput 
+          clearInput
+          (keyup.enter)="searchItemByName($any(searchInput.value))">
+        </ion-input>
+      </ion-item>
+      <ion-button expand="block" class="ion-margin-top" (click)="searchItemByName($any(searchInput.value))">
+        <ion-icon name="search-outline" slot="start"></ion-icon>
+        Find Record
       </ion-button>
     </ion-card-content>
   </ion-card>
 
-  <ion-card class="glass-card" *ngIf="isItemFound">
-    <ion-card-header class="card-header-custom">
-      <ion-card-title class="card-title-custom">
-        Edit Item Details
-      </ion-card-title>
+  <ion-card *ngIf="isItemFound" class="ion-no-margin form-card">
+    <ion-card-header>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <ion-card-title color="primary" style="font-size: 1.1rem; font-weight: bold;">Edit Details</ion-card-title>
+        <ion-badge color="medium">ID: #{{ itemForm.getRawValue().item_id }}</ion-badge>
+      </div>
     </ion-card-header>
-    <ion-card-content class="card-content-custom">
+
+    <ion-card-content>
       <form [formGroup]="itemForm">
-        <ion-item class="item-custom">
-          <ion-label class="label-custom">Item Name (Unique)</ion-label>
-          <ion-input formControlName="item_name" [disabled]="true"></ion-input>
+        
+        <!-- 统一使用 label-placement="floating" -->
+        <ion-item lines="full">
+          <ion-input label="Item Name (Read-only)" label-placement="floating" formControlName="item_name" readonly="true"></ion-input>
         </ion-item>
 
-        <ion-item class="item-custom">
-          <ion-label class="label-custom">Category</ion-label>
-          <ion-select formControlName="category" interface="popover">
-            <ion-select-option value="Electronics">Electronics</ion-select-option>
-            <ion-select-option value="Furniture">Furniture</ion-select-option>
-            <ion-select-option value="Clothing">Clothing</ion-select-option>
-            <ion-select-option value="Tools">Tools</ion-select-option>
+        <ion-item lines="full">
+          <ion-select label="Category" label-placement="floating" formControlName="category" interface="popover">
+            <ion-select-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</ion-select-option>
           </ion-select>
         </ion-item>
 
-        <ion-item class="item-custom">
-          <ion-label class="label-custom">Quantity</ion-label>
-          <ion-input type="number" formControlName="quantity"></ion-input>
+        <ion-item lines="full">
+          <ion-input label="Quantity" label-placement="floating" type="number" formControlName="quantity"></ion-input>
         </ion-item>
 
-        <ion-item class="item-custom">
-          <ion-label class="label-custom">Price($)</ion-label>
-          <ion-input type="number" step="0.01" formControlName="price"></ion-input>
+        <ion-item lines="full">
+          <ion-input label="Price ($)" label-placement="floating" type="number" formControlName="price"></ion-input>
         </ion-item>
 
-        <ion-item class="item-custom">
-          <ion-label class="label-custom">Supplier Name</ion-label>
-          <ion-input formControlName="supplier_name"></ion-input>
+        <ion-item lines="full">
+          <ion-input label="Supplier" label-placement="floating" formControlName="supplier_name"></ion-input>
         </ion-item>
 
-        <ion-item class="item-custom">
-          <ion-label class="label-custom">Stock Status</ion-label>
-          <ion-select formControlName="stock_status" interface="popover">
+        <ion-item lines="full">
+          <ion-select label="Stock Status" label-placement="floating" formControlName="stock_status">
             <ion-select-option value="In Stock">In Stock</ion-select-option>
             <ion-select-option value="Low Stock">Low Stock</ion-select-option>
             <ion-select-option value="Out of Stock">Out of Stock</ion-select-option>
           </ion-select>
         </ion-item>
 
-        <ion-item class="item-custom checkbox-row">
-          <ion-checkbox formControlName="featured_item"></ion-checkbox>
-          <ion-label class="label-custom">Mark as Featured Item</ion-label>
+        <ion-item lines="none" class="ion-margin-top">
+          <ion-checkbox formControlName="featured_item" justify="space-between">Mark as Featured Item</ion-checkbox>
         </ion-item>
 
-        <ion-item class="item-custom">
-          <ion-label class="label-custom">Special Note (Optional)</ion-label>
-          <ion-textarea formControlName="special_note" rows="2"></ion-textarea>
+        <ion-item lines="full" class="ion-margin-top">
+          <ion-textarea label="Special Note" label-placement="floating" formControlName="special_note" [autoGrow]="true"></ion-textarea>
         </ion-item>
 
-        <div class="btn-group">
-          <ion-button expand="block" color="success" class="btn-success" (click)="updateItem()">
+        <!-- 按钮组优化：增加间距和视觉重心 -->
+        <div class="ion-margin-top">
+          <ion-button expand="block" color="success" mode="ios" (click)="updateItem()" [disabled]="itemForm.invalid">
+            <ion-icon name="save-outline" slot="start"></ion-icon>
             Save Changes
           </ion-button>
-          <ion-button expand="block" color="danger" class="btn-danger" (click)="deleteItem()">
+          
+          <ion-button expand="block" color="danger" fill="outline" mode="ios" class="ion-margin-top" (click)="deleteItem()">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
             Delete Item
           </ion-button>
         </div>
       </form>
     </ion-card-content>
   </ion-card>
-
-  <footer class="footer-professional">
-    <div class="footer-content">
-      <div class="team-section">
-        <p class="team-heading">Development Team</p>
-        <p class="team-members">Team 3: Xinrui Ma, Jingfang Zhang, Hao Wang</p>
-      </div>
-      <div class="copyright-section">
-        <p class="copyright">© 2026 PMS-Team-3. All Rights Reserved.</p>
-        <p class="disclaimer">Academic Project for PROG2005 Assessment Only</p>
-      </div>
-    </div>
-  </footer>
 </ion-content>

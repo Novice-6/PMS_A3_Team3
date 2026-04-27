@@ -4,7 +4,7 @@
 <head>
   <base href="./" />
   <script>
-  // 🌟 强行修复安卓端的 Base URL 报错
+  // 强行修复安卓端的 Base URL 报错
   window.addEventListener('load', function() {
     if (window.location.href.indexOf('localhost') > -1) {
       const base = document.querySelector('base');

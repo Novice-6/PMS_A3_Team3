@@ -1,7 +1,7 @@
 // src/app/models/inventory.model.ts
 
 export interface InventoryItem {
-  item_id?: number; // 数据库自增字段，新建时我们不需要传它，所以加了 '?' 代表可选
+  item_id?: number; // 数据库自增字段，加了 '?' 代表可选
   item_name: string; // 必须，且用来作为查询和删除的关键字段
   category: 'Electronics' | 'Furniture' | 'Clothing' | 'Tools' | 'Miscellaneous';
   quantity: number;

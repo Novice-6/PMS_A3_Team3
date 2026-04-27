@@ -14,48 +14,72 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="loadAllItems()">
+  <!-- 传递 $event -->
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
     <ion-refresher-content
-      pullingIcon="arrow-down"
+      pullingIcon="chevron-down-outline"
       pullingText="Pull to refresh"
       refreshingSpinner="circles"
-      refreshingText="Refreshing..."
+      refreshingText="Fetching inventory..."
     ></ion-refresher-content>
   </ion-refresher>
 
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionInput)="searchItem()"
-    placeholder="Search item by name"
-    class="ion-padding"
+    placeholder="Search items..."
+    class="ion-padding-horizontal"
+    animated="true"
   ></ion-searchbar>
 
-  <div *ngIf="displayedItems.length === 0" class="ion-text-center ion-padding">
-    <ion-skeleton-text animated style="width: 80%; height: 20px;"></ion-skeleton-text>
-    <ion-skeleton-text animated style="width: 60%; height: 16px; margin-top: 10px;"></ion-skeleton-text>
-    <ion-skeleton-text animated style="width: 70%; height: 16px; margin-top: 10px;"></ion-skeleton-text>
+  <!-- 骨架屏展示逻辑 -->
+  <div *ngIf="isLoading" class="ion-padding">
+    <ion-card *ngFor="let i of [1,2,3]">
+      <ion-card-header>
+        <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
+      </ion-card-content>
+    </ion-card>
   </div>
 
-  <ion-card *ngFor="let item of displayedItems" class="ion-margin">
-    <ion-card-header [ngClass]="{
-      'in-stock': item.stock_status === 'In Stock',
-      'low-stock': item.stock_status === 'Low Stock',
-      'out-of-stock': item.stock_status === 'Out of Stock'
-    }">
-      <ion-card-title>{{ item.item_name }}</ion-card-title>
-      <ion-card-subtitle>{{ item.category }}</ion-card-subtitle>
+  <!-- 无结果提示 -->
+  <div *ngIf="!isLoading && displayedItems.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="archive-outline" style="font-size: 48px; color: #ccc;"></ion-icon>
+    <p style="color: #888;">No items found.</p>
+  </div>
+
+  <!-- 使用 ion-badge 提升视觉效果 -->
+  <ion-card *ngFor="let item of displayedItems" class="inventory-card">
+    <ion-card-header>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <ion-card-subtitle>{{ item.category | uppercase }}</ion-card-subtitle>
+          <ion-card-title>{{ item.item_name }}</ion-card-title>
+        </div>
+        <!-- 颜色状态标签 -->
+        <ion-badge [color]="item.stock_status === 'In Stock' ? 'success' : (item.stock_status === 'Low Stock' ? 'warning' : 'danger')">
+          {{ item.stock_status }}
+        </ion-badge>
+      </div>
     </ion-card-header>
 
     <ion-card-content>
-      <p>Quantity: {{ item.quantity }}</p>
-      <p>Price: ${{ item.price }}</p>
-      <p>Supplier: {{ item.supplier_name }}</p>
-      <p [ngClass]="{
-        'in-stock': item.stock_status === 'In Stock',
-        'low-stock': item.stock_status === 'Low Stock',
-        'out-of-stock': item.stock_status === 'Out of Stock'
-      }">Status: {{ item.stock_status }}</p>
-      <p *ngIf="item.special_note">Note: {{ item.special_note }}</p>
+      <!-- ID 加粗显示 -->
+        <p style="font-size: 0.9rem; margin-bottom: 8px;">
+          <b>Item ID: #{{ item.item_id }}</b>
+        </p>
+        <p><b>Quantity:</b> {{ item.quantity }}</p>
+        <p><b>Price:</b> ${{ item.price }}</p>
+        <p><b>Supplier:</b> {{ item.supplier_name }}</p>
+      <p><b>Quantity:</b> {{ item.quantity }}</p>
+      <p><b>Price:</b> ${{ item.price }}</p>
+      <p><b>Supplier:</b> {{ item.supplier_name }}</p>
+      <p *ngIf="item.special_note" class="ion-margin-top" style="font-style: italic;">
+        Note: {{ item.special_note }}
+      </p>
     </ion-card-content>
   </ion-card>
 </ion-content>

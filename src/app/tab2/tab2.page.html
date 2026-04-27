@@ -22,7 +22,7 @@
     <ion-card-content>
       <form [formGroup]="addForm" (ngSubmit)="addNewItem()">
         
-        <!-- 🌟 使用 label-placement="floating" 解决重叠 -->
+        <!-- 使用 label-placement="floating" 解决重叠 -->
         <ion-item lines="full">
           <ion-input 
             label="Item Name *" 
@@ -32,7 +32,9 @@
           </ion-input>
         </ion-item>
         <ion-text color="danger" class="ion-padding-start" *ngIf="addForm.get('item_name')?.invalid && addForm.get('item_name')?.touched">
-          <small>Item name is required (min 2 chars)</small>
+          <small *ngIf="addForm.get('item_name')?.errors?.['required']">Item name is required</small>
+          <small *ngIf="addForm.get('item_name')?.errors?.['minlength']">Item name must be at least 2 characters</small>
+          <small *ngIf="addForm.get('item_name')?.errors?.['hasNumbers']">Item name cannot contain numbers</small>
         </ion-text>
 
         <ion-item lines="full">

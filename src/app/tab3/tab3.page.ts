@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { 
+  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, 
+  IonCardTitle, IonCardContent, IonItem, IonInput, IonSelect, 
+  IonSelectOption, IonCheckbox, IonTextarea, IonButton, IonList, 
+  IonLabel, IonBadge, IonIcon, IonNote, IonText,
+  AlertController, ToastController, LoadingController, IonButtons } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { searchOutline, saveOutline, trashOutline, helpCircleOutline } from 'ionicons/icons';
 import { InventoryService } from '../services/inventory';
 import { InventoryItem } from '../models/inventory.model';
-import { 
-  AlertController, 
-  ToastController, 
-  LoadingController, // 🌟 增加加载控制器
-  IonicModule 
-} from '@ionic/angular';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tab3',
@@ -16,15 +18,22 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['tab3.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
+    CommonModule, 
     ReactiveFormsModule,
-    IonicModule // 🌟 直接导入 IonicModule 更简洁，包含所有离子组件
+    IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, 
+    IonCardTitle, IonCardContent, IonItem, IonInput, IonSelect, 
+    IonSelectOption, IonCheckbox, IonTextarea, IonButton,  
+    IonBadge, IonIcon, 
   ],
 })
 export class Tab3Page implements OnInit {
-  itemForm: FormGroup;
-  isItemFound = false;
-  currentSearchName = ''; // 记录当前搜索的名字，用于更新操作
+  public itemForm: FormGroup;
+  public isItemFound: boolean = false;
+  public currentSearchName: string = '';
+
+  // 补全分类数组，解决 HTML 中的 *ngFor 报错
+  public categories = ['Electronics', 'Furniture', 'Clothing', 'Tools', 'Miscellaneous'];
+  public stockStatuses = ['In Stock', 'Low Stock', 'Out of Stock'];
 
   constructor(
     private fb: FormBuilder,
@@ -33,8 +42,13 @@ export class Tab3Page implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
+    // 注册图标，防止安卓端图标消失
+    addIcons({ searchOutline, saveOutline, trashOutline, helpCircleOutline });
+
+    // 初始化表单
     this.itemForm = this.fb.group({
-      item_name: [{ value: '', disabled: true }, Validators.required], // 名称作为Key，通常不许改
+      item_id: [null], // 加入 ID 字段以便在 UI 显示
+      item_name: [{ value: '', disabled: true }, Validators.required],
       category: ['', Validators.required],
       quantity: [null, [Validators.required, Validators.min(1)]],
       price: [null, [Validators.required, Validators.min(0.01)]],
@@ -48,7 +62,8 @@ export class Tab3Page implements OnInit {
   ngOnInit() {}
 
   /**
-   * 🌟 根据名称搜索
+   * 根据名称搜索库存项
+   * @param searchName 用户输入的名称
    */
   async searchItemByName(searchName: string) {
     const name = searchName?.trim();
@@ -67,41 +82,40 @@ export class Tab3Page implements OnInit {
           const item = items[0];
           this.isItemFound = true;
           this.currentSearchName = item.item_name;
+          // 将获取到的数据填充进表单
           this.itemForm.patchValue({
             ...item,
-            // 确保 checkbox 逻辑正确
             featured_item: item.featured_item ? 1 : 0 
           });
           this.showToast('Item found!', 'success');
         } else {
           this.isItemFound = false;
-          this.showToast('Item not found in database.', 'danger');
+          this.showToast('Item not found.', 'danger');
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         loading.dismiss();
         this.isItemFound = false;
-        this.showToast(err.message || 'Search failed', 'danger');
+        this.showToast('Error: ' + err.message, 'danger');
       }
     });
   }
 
   /**
-   * 🌟 实际调用 API 进行更新
+   * 调用 API 更新当前物品
    */
   async updateItem() {
     if (this.itemForm.invalid) {
-      this.showToast('Please correct the errors in the form.', 'warning');
+      this.showToast('Form invalid. Please check inputs.', 'warning');
       return;
     }
 
     const loading = await this.loadingController.create({ message: 'Updating...' });
     await loading.present();
 
-    // 获取表单数据，包括禁用的 item_name
+    // getRawValue 可以获取到被 disabled 的 item_name 字段
     const formData = this.itemForm.getRawValue();
     
-    // 数据类型转换
     const updatedData: InventoryItem = {
       ...formData,
       quantity: Number(formData.quantity),
@@ -112,10 +126,10 @@ export class Tab3Page implements OnInit {
     this.inventoryService.updateItem(this.currentSearchName, updatedData).subscribe({
       next: () => {
         loading.dismiss();
-        this.showToast('Item updated successfully!', 'success');
+        this.showToast('Updated successfully!', 'success');
         this.resetForm();
       },
-      error: (err) => {
+      error: (err: any) => {
         loading.dismiss();
         this.showToast(`Update failed: ${err.message}`, 'danger');
       }
@@ -123,15 +137,14 @@ export class Tab3Page implements OnInit {
   }
 
   /**
-   * 🌟 改进的删除逻辑：从服务器捕获 Laptop 错误
+   * 弹出确认框并处理删除逻辑
    */
   async deleteItem() {
-    // 获取禁用的输入框的值
     const itemName = this.itemForm.getRawValue().item_name;
 
     const alert = await this.alertController.create({
-      header: 'Confirm Deletion',
-      message: `Are you sure you want to delete "${itemName}"? This action cannot be undone.`,
+      header: 'Confirm Delete',
+      message: `Are you sure you want to delete "${itemName}"?`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         { 
@@ -144,47 +157,68 @@ export class Tab3Page implements OnInit {
     await alert.present();
   }
 
+  /**
+   * 实际执行删除 API 动作，捕获 Laptop 报错
+   */
   private async executeDelete(name: string) {
-    const loading = await this.loadingController.create({ message: 'Deleting...' });
+    // 强制拦截逻辑：无论服务器报不报错，前端必须遵守 Laptop 保护
+    if (name.trim().toLowerCase() === 'laptop') {
+      this.showToast("Forbidden: Removal of the item named 'Laptop' is forbidden to ensure data persistence.", 'danger');
+      return; // 直接拦截，不发请求，保护数据
+    }
+
+    const loading = await this.loadingController.create({ 
+      message: 'Deleting item...',
+      spinner: 'crescent'
+    });
     await loading.present();
 
     this.inventoryService.deleteItem(name).subscribe({
-      next: () => {
+      next: (res) => {
         loading.dismiss();
-        this.showToast('Item deleted successfully.', 'success');
+        // 这里的 res 可能是服务器返回的 JSON
+        this.showToast(`Item "${name}" has been successfully removed.`, 'success');
         this.resetForm();
       },
       error: (err) => {
         loading.dismiss();
-        // 🌟 HD 关键：这里的 err.message 会包含来自服务器的 
-        // "Forbidden: Removal of the item named 'Laptop' is forbidden"
-        this.showToast(err.message, 'danger');
+        // 捕获服务器抛出的任何其他错误
+        this.showToast('Error: ' + (err.message || 'Server error occurred'), 'danger');
       }
     });
   }
 
+  /**
+   * 重置表单并隐藏编辑区域
+   */
   resetForm() {
     this.itemForm.reset({ featured_item: 0 });
     this.isItemFound = false;
     this.currentSearchName = '';
   }
 
-  async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+  /**
+   * 通用 Toast 提示
+   */
+  async showToast(message: string, color: 'success' | 'danger' | 'warning') {
     const toast = await this.toastController.create({
       message,
       duration: 3000,
       position: 'bottom',
-      color: color, // 🌟 增加颜色区分
-      buttons: [{ text: 'OK', role: 'cancel' }]
+      color: color,
+      buttons: [{ text: 'Dismiss', role: 'cancel' }]
     });
     await toast.present();
   }
 
+  /**
+   * 帮助弹窗
+   */
   async showHelp() {
     const alert = await this.alertController.create({
-      header: 'Management Help',
-      message: 'Search for an item by its unique name. Once found, you can modify its details and click Save, or choose to Delete it. Note that some system items like "Laptop" cannot be deleted.',
-      buttons: ['Got it']
+      header: 'Tab 3 Help Guide',
+      message: '1. Search for an item by name.\n2. Modify details and click Save.\n3. Delete item (System items like Laptop are protected).',
+      buttons: ['OK']
     });
     await alert.present();
   }
