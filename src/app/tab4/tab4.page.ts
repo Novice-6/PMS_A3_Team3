@@ -1,3 +1,10 @@
+/**
+ * Title: Tab4 Page - Privacy & Security Policy Help
+ * Author: Zhang Jinfang and Hao Wang
+ * Student ID: 24517306 and 24832782
+ * Description: This page displays the complete official Privacy & Security Policy of the Inventory Management Application.
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';

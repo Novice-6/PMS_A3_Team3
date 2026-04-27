@@ -1,3 +1,10 @@
+/**
+ * Title: Tab3 Page - Manage Inventory Items
+ * Author: Zhang Jinfang and Hao Wang
+ * Student ID: 24832562 and 24832782
+ * Description: This page allows users to manage inventory items, including adding, editing, deleting, and searching items.
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
